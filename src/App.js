@@ -1,12 +1,10 @@
 import React from "react";
-import Todo from "./Components/Todo";
+import Calculator from "./Components/Calculator";
 
 function App() {
   return (
     <>
-      <div className="container-fluid bold">
-        <Todo />
-      </div>
+      <Calculator />
     </>
   );
 }
