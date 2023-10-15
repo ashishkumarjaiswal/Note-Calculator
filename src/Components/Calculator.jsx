@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { useScreenshot, createFileName } from "use-react-screenshot";
 
 const Calculator = () => {
+  const ref = useRef(null);
+
   const [total, setTotal] = useState(0);
+  const [_image, takeScreenshot] = useScreenshot();
   const [noteValues, setNoteValues] = useState(
     localStorage.getItem("noteValues") === null
       ? {
-          2000: 0,
           500: 0,
           200: 0,
           100: 0,
           50: 0,
           20: 0,
-          coin20: 0,
           10: 0,
+          coin20: 0,
           coin10: 0,
           5: 0,
           2: 0,
@@ -20,20 +24,32 @@ const Calculator = () => {
           qr1: 0,
           qr2: 0,
           qr3: 0,
+          qr4: 0,
           requiedAmount: 0,
         }
       : JSON.parse(localStorage.getItem("noteValues"))
   );
 
+  const download = (image, { name, extension = "jpg" } = {}) => {
+    const a = document.createElement("a");
+    a.href = image;
+    a.download = createFileName(
+      extension,
+      new Date(Date.now()).toISOString()
+    );
+    a.click();
+  };
+
+  const getImage = () => takeScreenshot(ref.current).then(download);
+
   const currancyArray = [
-    { key: "2000", value: 2000 },
     { key: "500", value: 500 },
     { key: "200", value: 200 },
     { key: "100", value: 100 },
     { key: "50", value: 50 },
     { key: "20", value: 20 },
-    { key: "coin20", value: 20 },
     { key: "10", value: 10 },
+    { key: "coin20", value: 20 },
     { key: "coin10", value: 10 },
     { key: "5", value: 5 },
     { key: "2", value: 2 },
@@ -41,6 +57,7 @@ const Calculator = () => {
     { key: "qr1", value: 1 },
     { key: "qr2", value: 1 },
     { key: "qr3", value: 1 },
+    { key: "qr4", value: 1 },
   ];
 
   const resetValues = () => {
@@ -49,7 +66,6 @@ const Calculator = () => {
     if (!isAgree) return;
 
     setNoteValues({
-      2000: 0,
       500: 0,
       200: 0,
       100: 0,
@@ -64,6 +80,7 @@ const Calculator = () => {
       qr1: 0,
       qr2: 0,
       qr3: 0,
+      qr4: 0,
       requiedAmount: 0,
     });
   };
@@ -96,7 +113,10 @@ const Calculator = () => {
 
   return (
     <>
-      <div className="w-screen min-h-screen font-semibold bg-gradient-to-r from-slate-500 to-slate-800">
+      <div
+        className="w-screen min-h-screen font-semibold bg-gradient-to-r from-slate-500 to-slate-800"
+        ref={ref}
+      >
         <div className="max-w-md mx-auto">
           <h1 className="text-2xl text-center font-bold font-ubuntu text-white">
             JAISWAL ONLINE SERVICES
@@ -146,12 +166,18 @@ const Calculator = () => {
           <div className="mx-2 text-xl text-center bg-green-500 font-bold text-red-600 rounded-md my-3">
             {total}
           </div>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center gap-3">
             <button
               className="bg-red-500 rounded-md w-20 h-10"
               onClick={resetValues}
             >
               Reset
+            </button>
+            <button
+              className="bg-green-600 rounded-md w-20 h-10"
+              onClick={getImage}
+            >
+              Save
             </button>
           </div>
         </div>
