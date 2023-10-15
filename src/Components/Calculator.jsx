@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { useScreenshot, createFileName } from "use-react-screenshot";
 
 const Calculator = () => {
   const ref = useRef(null);
 
   const [total, setTotal] = useState(0);
-  const [_image, takeScreenshot] = useScreenshot();
   const [noteValues, setNoteValues] = useState(
     localStorage.getItem("noteValues") === null
       ? {
@@ -29,18 +26,6 @@ const Calculator = () => {
         }
       : JSON.parse(localStorage.getItem("noteValues"))
   );
-
-  const download = (image, { name, extension = "jpg" } = {}) => {
-    const a = document.createElement("a");
-    a.href = image;
-    a.download = createFileName(
-      extension,
-      new Date(Date.now()).toISOString()
-    );
-    a.click();
-  };
-
-  const getImage = () => takeScreenshot(ref.current).then(download);
 
   const currancyArray = [
     { key: "500", value: 500 },
@@ -113,72 +98,65 @@ const Calculator = () => {
 
   return (
     <>
-      <div
-        className="w-screen min-h-screen font-semibold bg-gradient-to-r from-slate-500 to-slate-800"
-        ref={ref}
-      >
-        <div className="max-w-md mx-auto">
-          <h1 className="text-2xl text-center font-bold font-ubuntu text-white">
-            JAISWAL ONLINE SERVICES
-          </h1>
-          <div className="flex justify-between my-2 text-lg">
-            <div className="flex-1 text-center flex items-center justify-center">
-              <p className="bg-green-400 w-24 rounded-md">To Collect</p>
-            </div>
-            <input
-              value={noteValues.requiedAmount}
-              onChange={(e) => {
-                handleInputChange("requiedAmount", e.target.value);
-              }}
-              className="w-24 text-center rounded-md"
-              type="number"
-              placeholder="Requied amount"
-            />
-            <div className="flex-1 text-center flex items-center justify-center">
-              <p className="bg-green-400 w-24 rounded-md overflow-hidden">
-                {noteValues.requiedAmount - total}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 text-lg">
-            {currancyArray.map((item) => (
-              <div className="flex justify-between " key={item.key}>
-                <div className="flex-1 text-center flex items-center justify-center">
-                  <p className="bg-green-400 w-24 rounded-md">{item.key}</p>
-                </div>
-                <input
-                  className="w-24 text-center rounded-md"
-                  value={noteValues[item.key]}
-                  onChange={(e) => {
-                    handleInputChange(item.key, e.target.value);
-                  }}
-                  type="number"
-                  placeholder={item.key}
-                />
-                <div className="flex-1 text-center flex items-center justify-center">
-                  <p className="bg-green-400 w-24 rounded-lg overflow-hidden">
-                    {noteValues[item.key] * item.value}
-                  </p>
-                </div>
+      <div ref={ref}>
+        <div className="w-screen min-h-screen font-semibold bg-gradient-to-r from-slate-500 to-slate-800">
+          <div className="max-w-md mx-auto">
+            <h1 className="text-2xl text-center font-bold font-ubuntu text-white">
+              JAISWAL ONLINE SERVICES
+            </h1>
+            <div className="flex justify-between my-2 text-lg">
+              <div className="flex-1 text-center flex items-center justify-center">
+                <p className="bg-green-400 w-24 rounded-md">To Collect</p>
               </div>
-            ))}
-          </div>
-          <div className="mx-2 text-xl text-center bg-green-500 font-bold text-red-600 rounded-md my-3">
-            {total}
-          </div>
-          <div className="flex items-center justify-center gap-3">
-            <button
-              className="bg-red-500 rounded-md w-20 h-10"
-              onClick={resetValues}
-            >
-              Reset
-            </button>
-            <button
-              className="bg-green-600 rounded-md w-20 h-10"
-              onClick={getImage}
-            >
-              Save
-            </button>
+              <input
+                value={noteValues.requiedAmount}
+                onChange={(e) => {
+                  handleInputChange("requiedAmount", e.target.value);
+                }}
+                className="w-24 text-center rounded-md"
+                type="number"
+                placeholder="Requied amount"
+              />
+              <div className="flex-1 text-center flex items-center justify-center">
+                <p className="bg-green-400 w-24 rounded-md overflow-hidden">
+                  {noteValues.requiedAmount - total}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 text-lg">
+              {currancyArray.map((item) => (
+                <div className="flex justify-between " key={item.key}>
+                  <div className="flex-1 text-center flex items-center justify-center">
+                    <p className="bg-green-400 w-24 rounded-md">{item.key}</p>
+                  </div>
+                  <input
+                    className="w-24 text-center rounded-md"
+                    value={noteValues[item.key]}
+                    onChange={(e) => {
+                      handleInputChange(item.key, e.target.value);
+                    }}
+                    type="number"
+                    placeholder={item.key}
+                  />
+                  <div className="flex-1 text-center flex items-center justify-center">
+                    <p className="bg-green-400 w-24 rounded-lg overflow-hidden">
+                      {noteValues[item.key] * item.value}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mx-2 text-xl text-center bg-green-500 font-bold text-red-600 rounded-md my-3">
+              {total}
+            </div>
+            <div className="flex items-center justify-center">
+              <button
+                className="bg-red-500 rounded-md w-20 h-10"
+                onClick={resetValues}
+              >
+                Reset
+              </button>
+            </div>
           </div>
         </div>
       </div>
